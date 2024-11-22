@@ -1,12 +1,27 @@
-
-/* 
-
-    You can write your own styles here...
+h1 {
+    font-size: 60px;
     
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
+   
+}
+ul {
+    list-style: none;
+}
 
-*/
+p {
+    font-size: 13px;
+    
+}
+
+.btn {
+    
+    visibility: hidden;
+  }
+
+li:hover > .btn {
+    visibility: visible;
+  }
+
+.background {
+    height: 100%;
+    width: 100%;
+  }
