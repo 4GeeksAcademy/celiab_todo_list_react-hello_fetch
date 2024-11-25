@@ -12,12 +12,12 @@ p {
     
 }
 
-.btn {
+.button-hide {
     
     visibility: hidden;
   }
 
-li:hover > .btn {
+li:hover > .button-hide {
     visibility: visible;
   }
 

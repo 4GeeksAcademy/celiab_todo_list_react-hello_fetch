@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+
 
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
@@ -10,19 +11,74 @@ const Home = () => {
 	const [todoList, setTodoList] = useState([])
 	
 	
+	useEffect(() => { 
+			updateTodoList()
+		},[todoList]);
 
+	const updateTodoList = ()=> {
+			
+			fetch('https://playground.4geeks.com/todo/users/celiabernal')
+			.then((res)=>{if (!res.ok) throw Error(res.statusText);
+				return res.json();})
+			.then((data) =>{setTodoList(data.todos)})
+			.catch((err)=>{err})
+				};
+		
 	const showTodos = () => {return todoList.map(formatTodo)} 
+	// ELIMINATE TODO 
 	const formatTodo = (todo,index) =>
-		 {return <li className=" list-group-item d-flex justify-content-between align-items-center" key= {index}>{todo}
-						<button className="btn" 
+		 {return <li className=" list-group-item d-flex justify-content-between align-items-center" key= {index}>{todo.label}
+						<button className="btn button-hide" 
 						onClick={()=>{
-							let copyTodolist = [...todoList]
-							copyTodolist.splice(index,1)
-							setTodoList(copyTodolist)
+							deleteTodo(todo.id)
+							// let copyTodolist = [...todoList] 
+							// copyTodolist.splice(index,1)
+							// setTodoList(copyTodolist)
 												}}
 						>x</button>
 						</li>
 				}
+		
+
+// ADD TODO - ENTER
+	const addTodo = (todo) =>{ 
+		fetch('https://playground.4geeks.com/todo/todos/celiabernal',{ 
+			method: 'POST',
+			body: JSON.stringify(({ label: todo,
+									is_done: false
+			 })),
+			 headers: {
+				'Content-Type': 'application/json'
+			  }}
+			 
+		)		
+		.then(res => {
+			if (!res.ok) throw Error(res.statusText);
+			return res.json();
+		  })
+		.then(response => console.log('Success:', response))
+		.catch(error => console.error(error));	
+	}
+
+// DELETE TODO
+	const deleteTodo = (id) =>{
+		fetch(`https://playground.4geeks.com/todo/todos/${id}`,{ 
+			method: 'DELETE',
+		}
+
+		)		
+		.then(res => {
+			if (!res.ok) throw Error(res.statusText);
+			return res.text();
+		  })
+		.then(response => console.log('Success:', response))
+		.catch(error => console.error(error));	
+	 }
+
+//DELETE ALL TODOS
+	const deleteAllTodos = () =>{ 
+			todoList.map((todo)=>{deleteTodo(todo.id)})
+}
 	return (
 		<div className="background bg-light">
 			{/* HEADER */}
@@ -32,14 +88,15 @@ const Home = () => {
 			</div>
 			{/* NOTES */}
 			<div className="row d-flex justify-content-center px-4 pt-5  bg-light">
-				
+	{/* AÑADIR TODOS			 */}
 			<div className="col-4 border px-5 shadow pt-3  bg-body">
 					<input className="form-control form-control-lg" type="text" placeholder="ex: Wash my Hands" aria-label=".form-control-lg example"
 						value = {newTodo}
-						onChange={(e)=>{setNewTodo(e.target.value)}}
+						onChange={(e)=>{setNewTodo(e.target.value)}} //ADD TODO
 						onKeyDown={(e) => {
 							if (e.key === 'Enter') {
-								todoList.push(newTodo)
+								addTodo(newTodo)
+								// todoList.push(newTodo)
 								setNewTodo("")
 							}
 						}}
@@ -73,6 +130,10 @@ const Home = () => {
 			</div>
 
 			</div>
+			<div className="d-flex justify-content-center"><button type="button" className=" d btn btn-secondary m-5"
+			onClick={()=>{deleteAllTodos()}}
+			>Reset Todos</button></div>
+
 		</div>
 	);
 };
