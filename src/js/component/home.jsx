@@ -39,6 +39,20 @@ const Home = () => {
 						</li>
 				}
 		
+// CREATE USER				
+const createUser = () =>{
+	fetch(`https://playground.4geeks.com/todo/users/celiabernal`,{ 
+		method: 'POST',
+	}
+	)		
+	.then(res => {
+		if (!res.ok) throw Error(res.statusText);
+		return res.text();
+	  })
+	.then(response => console.log('Success:', response))
+	.catch(error => console.error(error));	
+ }
+
 
 // ADD TODO - ENTER
 	const addTodo = (todo) =>{ 
@@ -97,7 +111,9 @@ const Home = () => {
 							if (e.key === 'Enter') {
 								addTodo(newTodo)
 								// todoList.push(newTodo)
-								setNewTodo("")
+								setNewTodo("");
+								createUser();
+								
 							}
 						}}
 					/>
