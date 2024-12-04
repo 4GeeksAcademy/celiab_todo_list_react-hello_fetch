@@ -7,13 +7,15 @@ import rigoImage from "../../img/rigo-baby.jpg";
 
 //create your first component
 const Home = () => {
+
 	const [newTodo, setNewTodo] = useState("")
 	const [todoList, setTodoList] = useState([])
 	
+
 	
 	useEffect(() => { 
 			updateTodoList()
-		},[todoList]);
+		},[]);
 
 	const updateTodoList = ()=> {
 			
@@ -70,7 +72,10 @@ const createUser = () =>{
 			if (!res.ok) throw Error(res.statusText);
 			return res.json();
 		  })
-		.then(response => console.log('Success:', response))
+		.then(response => {
+			console.log('Success:', response)
+			updateTodoList()
+		})
 		.catch(error => console.error(error));	
 	}
 
@@ -84,8 +89,11 @@ const createUser = () =>{
 		.then(res => {
 			if (!res.ok) throw Error(res.statusText);
 			return res.text();
-		  })
-		.then(response => console.log('Success:', response))
+		})
+		.then(response => {
+			console.log('Success:', response)
+			updateTodoList()
+		})
 		.catch(error => console.error(error));	
 	 }
 
@@ -93,6 +101,9 @@ const createUser = () =>{
 	const deleteAllTodos = () =>{ 
 			todoList.map((todo)=>{deleteTodo(todo.id)})
 }
+
+	useEffect(()=>{createUser()},[])
+
 	return (
 		<div className="background bg-light">
 			{/* HEADER */}
@@ -110,9 +121,7 @@ const createUser = () =>{
 						onKeyDown={(e) => {
 							if (e.key === 'Enter') {
 								addTodo(newTodo)
-								// todoList.push(newTodo)
 								setNewTodo("");
-								createUser();
 								
 							}
 						}}
